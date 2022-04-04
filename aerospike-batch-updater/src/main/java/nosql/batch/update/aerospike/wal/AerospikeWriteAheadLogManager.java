@@ -147,7 +147,7 @@ public class AerospikeWriteAheadLogManager<LOCKS extends AerospikeBatchLocks<EV>
         return statement;
     }
 
-    public static  List<WalTimeRange> getTimeRangesForTimestamps(List<Long> timestamps, int batchSize) {
+    public static List<WalTimeRange> getTimeRangesForTimestamps(List<Long> timestamps, int batchSize) {
         List<WalTimeRange> walTimeRanges = new ArrayList<>();
 
         int fromIdx = 0;
