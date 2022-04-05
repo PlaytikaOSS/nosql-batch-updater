@@ -2,7 +2,9 @@ package nosql.batch.update.wal;
 
 import nosql.batch.update.BatchUpdate;
 
-public final class WalRecord<LOCKS, UPDATES, BATCH_ID> implements Comparable<WalRecord>{
+import java.util.Objects;
+
+public final class WalRecord<LOCKS, UPDATES, BATCH_ID> implements Comparable<WalRecord<LOCKS, UPDATES, BATCH_ID>> {
 
     public final BATCH_ID batchId;
     public final long timestamp;
@@ -15,8 +17,20 @@ public final class WalRecord<LOCKS, UPDATES, BATCH_ID> implements Comparable<Wal
     }
 
     @Override
-    public int compareTo(WalRecord transaction) {
+    public int compareTo(WalRecord<LOCKS, UPDATES, BATCH_ID> transaction) {
         return Long.compare(timestamp, transaction.timestamp);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WalRecord<?, ?, ?> walRecord = (WalRecord<?, ?, ?>) o;
+        return timestamp == walRecord.timestamp && Objects.equals(batchId, walRecord.batchId) && Objects.equals(batchUpdate, walRecord.batchUpdate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(batchId, timestamp, batchUpdate);
+    }
 }
