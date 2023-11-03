@@ -27,10 +27,6 @@
     <packaging>jar</packaging>
     <name>Reactor batch updates on Aerospike</name>
 
-    <properties>
-        <main.basedir>${project.basedir}/..</main.basedir>
-    </properties>
-
     <dependencies>
 
         <dependency>
@@ -123,7 +119,5 @@
             <artifactId>blockhound</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
 </project>
