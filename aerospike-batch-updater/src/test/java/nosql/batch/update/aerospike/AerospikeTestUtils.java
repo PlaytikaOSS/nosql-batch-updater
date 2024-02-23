@@ -16,13 +16,13 @@ public class AerospikeTestUtils {
     }
 
     public static AerospikeClient getAerospikeClient(GenericContainer aerospike) {
-        return new AerospikeClient(aerospike.getContainerIpAddress(),
-                aerospike.getMappedPort(AEROSPIKE_PROPERTIES.getPort()));
+        return getAerospikeClient(aerospike, null);
     }
 
     public static AerospikeClient getAerospikeClient(GenericContainer aerospike, EventLoops eventLoops) {
         ClientPolicy clientPolicy = new ClientPolicy();
         clientPolicy.eventLoops = eventLoops;
+        clientPolicy.writePolicyDefault.durableDelete = true;
         return new AerospikeClient(clientPolicy, aerospike.getContainerIpAddress(),
                 aerospike.getMappedPort(AEROSPIKE_PROPERTIES.getPort()));
     }
