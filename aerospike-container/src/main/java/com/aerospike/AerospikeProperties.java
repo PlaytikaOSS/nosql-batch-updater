@@ -26,10 +26,11 @@ package com.aerospike;
 public class AerospikeProperties {
 
     boolean enabled = true;
-    String dockerImage = "aerospike:ce-6.2.0.2";
+    String dockerImage = "aerospike/aerospike-server-enterprise:6.3.0.16_1";
     String namespace = "TEST";
     String host = "localhost";
     int port = 3000;
+    boolean durableDelete = true;
 
     public boolean isEnabled() {
         return enabled;
@@ -69,5 +70,13 @@ public class AerospikeProperties {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public boolean isDurableDelete() {
+        return durableDelete;
+    }
+
+    public void setDurableDelete(boolean durableDelete) {
+        this.durableDelete = durableDelete;
     }
 }

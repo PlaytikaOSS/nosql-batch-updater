@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.util.concurrent.Executors;
 
 import static nosql.batch.update.aerospike.AerospikeTestUtils.AEROSPIKE_PROPERTIES;
+import static nosql.batch.update.aerospike.AerospikeTestUtils.getAerospikeClient;
 import static nosql.batch.update.aerospike.AerospikeTestUtils.getAerospikeContainer;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,8 +18,7 @@ public class AerospikeExclusiveLockerTest extends ExclusiveLockerTest {
 
     static final GenericContainer aerospike = getAerospikeContainer();
 
-    static final AerospikeClient client = new AerospikeClient(aerospike.getContainerIpAddress(),
-            aerospike.getMappedPort(AEROSPIKE_PROPERTIES.getPort()));
+    static final AerospikeClient client = getAerospikeClient(aerospike);
 
     @Override
     public ExclusiveLocker getExclusiveLocker(){

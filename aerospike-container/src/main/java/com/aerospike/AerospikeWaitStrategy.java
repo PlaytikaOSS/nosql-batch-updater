@@ -32,9 +32,8 @@ public class AerospikeWaitStrategy extends AbstractWaitStrategy {
         long seconds = this.startupTimeout.getSeconds();
 
         try {
-            Unreliables.retryUntilTrue((int)seconds, TimeUnit.SECONDS, () -> {
-                return (Boolean)this.getRateLimiter().getWhenReady(this::isReady);
-            });
+            Unreliables.retryUntilTrue((int)seconds, TimeUnit.SECONDS,
+                    () -> this.getRateLimiter().getWhenReady(this::isReady));
         } catch (TimeoutException var4) {
             throw new ContainerLaunchException(String.format("[%s] notifies that container[%s] is not ready after [%d] seconds, container cannot be started.", this.getContainerType(), this.waitStrategyTarget.getContainerId(), seconds));
         }
