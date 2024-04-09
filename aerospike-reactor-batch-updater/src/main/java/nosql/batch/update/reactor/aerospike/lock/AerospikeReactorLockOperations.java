@@ -12,7 +12,6 @@ import com.aerospike.client.reactor.IAerospikeReactorClient;
 import nosql.batch.update.aerospike.lock.AerospikeBatchLocks;
 import nosql.batch.update.aerospike.lock.AerospikeLock;
 import nosql.batch.update.lock.LockingException;
-import nosql.batch.update.lock.PermanentLockingException;
 import nosql.batch.update.lock.TemporaryLockingException;
 import nosql.batch.update.reactor.lock.ReactorLockOperations;
 import org.slf4j.Logger;
@@ -33,11 +32,6 @@ public class AerospikeReactorLockOperations<LOCKS extends AerospikeBatchLocks<EV
     private static final Logger logger = LoggerFactory.getLogger(AerospikeReactorLockOperations.class);
 
     private static final String BATCH_ID_BIN_NAME = "batch_id";
-
-    private static final WritePolicy checkValuesPolicy = new WritePolicy();
-    static {
-        checkValuesPolicy.respondAllOps = true;
-    }
 
     private final IAerospikeReactorClient reactorClient;
     private final WritePolicy putLockPolicy;

@@ -35,11 +35,6 @@ public class AerospikeLockOperations<LOCKS extends AerospikeBatchLocks<EV>, EV> 
 
     private static final String BATCH_ID_BIN_NAME = "batch_id";
 
-    private static final WritePolicy checkValuesPolicy = new WritePolicy();
-    static {
-        checkValuesPolicy.respondAllOps = true;
-    }
-
     private final IAerospikeClient aerospikeClient;
     private final WritePolicy putLockPolicy;
     private final WritePolicy deleteLockPolicy;
