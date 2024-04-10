@@ -39,11 +39,11 @@ public class AerospikeBasicBatchUpdater {
     }
 
     public static AerospikeLockOperations<AerospikeBasicBatchLocks, List<Record>> basicLockOperations(
-            IAerospikeClient reactorClient,
+            IAerospikeClient client,
             ExecutorService aerospikeExecutorService) {
         return new AerospikeLockOperations<>(
-                reactorClient,
-                new AerospikeBasicExpectedValueOperations(reactorClient),
+                client,
+                new AerospikeBasicExpectedValueOperations(client),
                 aerospikeExecutorService);
     }
 
