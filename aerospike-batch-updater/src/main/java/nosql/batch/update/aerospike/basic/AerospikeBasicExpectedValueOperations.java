@@ -4,6 +4,8 @@ import com.aerospike.client.BatchRead;
 import com.aerospike.client.Bin;
 import com.aerospike.client.IAerospikeClient;
 import com.aerospike.client.Value;
+import com.aerospike.client.policy.BatchPolicy;
+import com.aerospike.client.policy.Replica;
 import nosql.batch.update.aerospike.lock.AerospikeExpectedValuesOperations;
 import nosql.batch.update.aerospike.lock.AerospikeLock;
 import nosql.batch.update.lock.Lock;
@@ -16,9 +18,11 @@ import java.util.List;
 public class AerospikeBasicExpectedValueOperations implements AerospikeExpectedValuesOperations<List<Record>> {
 
     private final IAerospikeClient client;
+    private final BatchPolicy checkValuesPolicy;
 
     public AerospikeBasicExpectedValueOperations(IAerospikeClient client) {
         this.client = client;
+        this.checkValuesPolicy = buildCheckValuesPolicy(client);
     }
 
     @Override
@@ -41,7 +45,7 @@ public class AerospikeBasicExpectedValueOperations implements AerospikeExpectedV
             expectedValuesToCheck.add(record);
         }
 
-        client.get(null, batchReads);
+        client.get(checkValuesPolicy, batchReads);
         for(int i = 0, n = expectedValuesToCheck.size(); i < n; i++){
             checkValues(batchReads.get(i), expectedValuesToCheck.get(i));
         }
@@ -60,5 +64,12 @@ public class AerospikeBasicExpectedValueOperations implements AerospikeExpectedV
 
     private boolean equals(Object actualValue, Value expectedValue) {
          return expectedValue.equals(Value.get(actualValue));
+    }
+
+    private static BatchPolicy buildCheckValuesPolicy(IAerospikeClient aerospikeClient){
+        BatchPolicy checkValuesPolicy = new BatchPolicy(aerospikeClient.getBatchPolicyDefault());
+        checkValuesPolicy.replica = Replica.MASTER;
+        checkValuesPolicy.respondAllKeys = true;
+        return checkValuesPolicy;
     }
 }

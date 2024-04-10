@@ -7,7 +7,9 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.ResultCode;
 import com.aerospike.client.Value;
+import com.aerospike.client.policy.BatchPolicy;
 import com.aerospike.client.policy.RecordExistsAction;
+import com.aerospike.client.policy.Replica;
 import com.aerospike.client.policy.WritePolicy;
 import nosql.batch.update.lock.LockOperations;
 import nosql.batch.update.lock.LockingException;
@@ -36,6 +38,8 @@ public class AerospikeLockOperations<LOCKS extends AerospikeBatchLocks<EV>, EV> 
     private static final String BATCH_ID_BIN_NAME = "batch_id";
 
     private final IAerospikeClient aerospikeClient;
+
+    private final BatchPolicy readLocksPolicy;
     private final WritePolicy putLockPolicy;
     private final WritePolicy deleteLockPolicy;
     private final AerospikeExpectedValuesOperations<EV> expectedValuesOperations;
@@ -44,11 +48,18 @@ public class AerospikeLockOperations<LOCKS extends AerospikeBatchLocks<EV>, EV> 
     public AerospikeLockOperations(IAerospikeClient aerospikeClient,
                                    AerospikeExpectedValuesOperations<EV> expectedValuesOperations,
                                    ExecutorService aerospikeExecutor) {
-        this.putLockPolicy = configurePutLockPolicy(aerospikeClient.getWritePolicyDefault());
         this.aerospikeClient = aerospikeClient;
+        this.putLockPolicy = configurePutLockPolicy(aerospikeClient.getWritePolicyDefault());
+        this.readLocksPolicy = configureGetLocksPolicy(aerospikeClient.getBatchPolicyDefault());
         this.aerospikeExecutor = aerospikeExecutor;
         this.deleteLockPolicy = putLockPolicy;
         this.expectedValuesOperations = expectedValuesOperations;
+    }
+
+    private BatchPolicy configureGetLocksPolicy(BatchPolicy batchPolicyDefault) {
+        BatchPolicy batchPolicy = new BatchPolicy(batchPolicyDefault);
+        batchPolicy.replica = Replica.MASTER;
+        return batchPolicy;
     }
 
     private WritePolicy configurePutLockPolicy(WritePolicy writePolicyDefault){
@@ -186,7 +197,7 @@ public class AerospikeLockOperations<LOCKS extends AerospikeBatchLocks<EV>, EV> 
         List<Key> keys = aerospikeBatchLocks.keysToLock();
 
         Key[] keysArray = keys.toArray(new Key[0]);
-        Record[] records = aerospikeClient.get(null, keysArray);
+        Record[] records = aerospikeClient.get(readLocksPolicy, keysArray);
 
         List<AerospikeLock> keysFiltered = new ArrayList<>(keys.size());
         for(int i = 0, m = keysArray.length; i < m; i++){
