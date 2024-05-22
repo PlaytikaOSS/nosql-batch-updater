@@ -139,9 +139,9 @@ public class AerospikeLockOperations<LOCKS extends AerospikeBatchLocks<EV>, EV> 
         return locks;
     }
 
-    private AerospikeLock putLock(Value batchId, Key lockKey, boolean checkBatchId) throws TemporaryLockingException{
+    AerospikeLock putLock(Value batchId, Key lockKey, boolean checkBatchId) throws TemporaryLockingException{
         try {
-            aerospikeClient.add(putLockPolicy, lockKey, new Bin(BATCH_ID_BIN_NAME, batchId));
+            aerospikeClient.put(putLockPolicy, lockKey, new Bin(BATCH_ID_BIN_NAME, batchId));
             logger.trace("acquired lock key=[{}], batchId=[{}]", lockKey, batchId);
             return new AerospikeLock(LOCKED, lockKey);
         } catch (AerospikeException ae) {
@@ -180,7 +180,7 @@ public class AerospikeLockOperations<LOCKS extends AerospikeBatchLocks<EV>, EV> 
         expectedValuesOperations.checkExpectedValues(keysLocked, batchLocks.expectedValues());
     }
 
-    private Value getBatchIdOfLock(Key lockKey){
+    Value getBatchIdOfLock(Key lockKey){
         Record record = aerospikeClient.get(null, lockKey);
         return getBatchId(record);
     }
